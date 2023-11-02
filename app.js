@@ -1,18 +1,32 @@
+const bookmarkBtnId = 'fe-bookmark-btn-id'
+const subscribeBtnId = 'fe-subscribe-btn-id'
+
+const activeBtnText = 'bookmark'
+const inactiveBtnText = 'bookmarked'
+
+const activeSubscribeBtnText = 'subscribe'
+const loadBtnText = 'loading'
+const inactiveSubscribeBtnText = 'subscribed'
+
 function start_application() {
   const currentUrl = window.location.href;
-  display_button_in_youtube(subscribe_load_button());
+  const subscribe_load_button = new Button_Factory(subscribeBtnId, loadBtnText, true, null)
+  display_button_in_youtube(subscribe_load_button.get_btn())
   fetch_channel_url().then(function (channelURL) {
     id = get_youtube_video_id(currentUrl)
     if (channel_exists(channelURL)) {
-      display_button_in_youtube(subscribe_inactive_btn())
+      const inactive_subscribe_btn = new Button_Factory(subscribeBtnId, inactiveSubscribeBtnText, true, null)
+      display_button_in_youtube(inactive_subscribe_btn.get_btn())
     } else {
       display_button_in_youtube(subscribe_button(channelURL))
     }
   })
   if (bookmark_exists(currentUrl)) {
-    display_button_in_youtube(inactive_button())
+    const inactive_bookmark_btn = new Button_Factory(bookmarkBtnId, inactiveBtnText, true, null)
+    display_button_in_youtube(inactive_bookmark_btn.get_btn())
   } else {
-    display_button_in_youtube(active_button())
+    const active_bookmark_btn = new Button_Factory(bookmarkBtnId, activeBtnText, false, bookmark_current_url)
+    display_button_in_youtube(active_bookmark_btn.get_btn())
   }
 }
 
@@ -28,25 +42,8 @@ function display_button_in_youtube(button) {
   info_div.appendChild(button);
 }
 
-function active_button() {
-  element = document.getElementById('fe-bookmark-btn-id')
-  if (typeof (element) !== 'undefined' && element !== null) {
-    element.innerText = 'bookmark'
-    element.disabled = false;
-    element.onclick = bookmark_current_url
-    return element;
-  }
-  // creating new button
-  button = document.createElement('button');
-  button.setAttribute("id", "fe-bookmark-btn-id");
-  button.innerText = 'bookmark';
-  button.onclick = bookmark_current_url
-  return button;
-}
-
 function subscribe_button(channel_url) {
-  id = 'fe-subscribe-btn-id'
-  element = document.getElementById(id)
+  element = document.getElementById(subscribeBtnId)
   if (typeof (element) !== 'undefined' && element !== null) {
     element.innerText = 'subscribe'
     element.disabled = false;
@@ -55,43 +52,35 @@ function subscribe_button(channel_url) {
   }
   // creating new button
   button = document.createElement('button');
-  button.setAttribute("id", id);
+  button.setAttribute("id", subscribeBtnId);
   button.innerText = 'subscribe';
   button.onclick = subscribe_channel.bind(this, channel_url)
   return button;
 }
 
-
-function subscribe_load_button() {
-  id = 'fe-subscribe-btn-id'
-  element = document.getElementById(id)
-  if (typeof (element) !== 'undefined' && element !== null) {
-    element.innerText = 'loading'
-    element.disabled = true;
-    return element;
+class Button_Factory {
+  constructor(id, text, isDisabled, onClick) {
+    this.id = id;
+    this.text = text;
+    this.onClick = onClick;
+    this.isDisabled = isDisabled;
   }
-  // creating new button
-  button = document.createElement('button');
-  button.setAttribute("id", id);
-  button.innerText = 'loading';
-  button.disabled = true;
-  return button;
-}
-
-function subscribe_inactive_btn() {
-  id = 'fe-subscribe-btn-id'
-  element = document.getElementById(id)
-  if (typeof (element) !== 'undefined' && element !== null) {
-    element.innerText = 'subscribed'
-    element.disabled = true;
-    return element;
+  get_btn() {
+    let element = document.getElementById(this.id)
+    if (typeof (element) !== 'undefined' && element !== null) {
+      element.innerText = this.text
+      element.disabled = this.isDisabled;
+      element.onclick = this.onClick
+      return element;
+    }
+    let button = document.createElement('button');
+    button.setAttribute("id", this.id);
+    button.innerText = this.text;
+    button.disabled = this.isDisabled;
+    button.onclick = this.onClick;
+    return button;
   }
-  // creating new button
-  button = document.createElement('button');
-  button.setAttribute("id", id);
-  button.innerText = 'subscribed';
-  button.disabled = true;
-  return button;
+
 }
 
 async function callYoutubeAPI(video_id) {
@@ -107,26 +96,13 @@ const fetch_channel_url = async function () {
   return channelUrl
 }
 
-function inactive_button() {
-  element = document.getElementById('fe-bookmark-btn-id')
-  if (typeof (element) !== 'undefined' && element !== null) {
-    element.innerText = 'bookmarked'
-    element.disabled = true;
-    return element;
-  }
-  button = document.createElement('button');
-  button.setAttribute("id", "fe-bookmark-btn-id");
-  button.innerText = 'bookmarked';
-  button.disabled = true;
-  return button;
-}
-
 function bookmark_current_url() {
   const currentUrl = window.location.href;
   if (!bookmark_exists(currentUrl)) {
     store_bookmark(currentUrl);
   }
-  display_button_in_youtube(inactive_button())
+  const inactive_bookmark_btn = new Button_Factory(bookmarkBtnId, inactiveBtnText, true, null)
+  display_button_in_youtube(inactive_bookmark_btn.get_btn())
 }
 
 function store_bookmark(new_bookmark) {
@@ -140,7 +116,8 @@ function subscribe_channel(channel_url) {
   if (!channel_exists(channel_url)) {
     store_channel(channel_url)
   }
-  display_button_in_youtube(subscribe_inactive_btn())
+  const inactive_subscribe_btn = new Button_Factory(subscribeBtnId, inactiveSubscribeBtnText, true, null)
+  display_button_in_youtube(inactive_subscribe_btn.get_btn())
 }
 
 function store_channel(channel_url) {
