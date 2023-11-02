@@ -1,0 +1,17 @@
+{
+    "manifest_version": 2,
+    "name": "YouTube Skin",
+    "version": "0.0.1",
+    "description": "YouTube save videos and channels",
+    "icons": {
+        "48": "icons/icon-512.png"
+    },
+    "permissions": ["activeTab", "contextMenus", "https://yt.lemnoslife.com/*"],
+    "content_scripts": [
+        {
+            "matches": ["*://*.youtube.com/*"],
+            "js": ["app.js"],
+            "run_at": "document_end"
+        }
+    ]
+}
