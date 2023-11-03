@@ -18,7 +18,9 @@ function start_application() {
       const inactive_subscribe_btn = new Button_Factory(subscribeBtnId, inactiveSubscribeBtnText, true, null)
       display_button_in_youtube(inactive_subscribe_btn.get_btn())
     } else {
-      display_button_in_youtube(subscribe_button(channelURL))
+      const active_subscribe_btn = new Button_Factory(subscribeBtnId, activeSubscribeBtnText, false, subscribe_channel, [channelURL])
+      let btn = active_subscribe_btn.get_btn()
+      display_button_in_youtube(btn)
     }
   })
   if (bookmark_exists(currentUrl)) {
@@ -42,35 +44,20 @@ function display_button_in_youtube(button) {
   info_div.appendChild(button);
 }
 
-function subscribe_button(channel_url) {
-  element = document.getElementById(subscribeBtnId)
-  if (typeof (element) !== 'undefined' && element !== null) {
-    element.innerText = 'subscribe'
-    element.disabled = false;
-    element.onclick = subscribe_channel.bind(this, channel_url)
-    return element;
-  }
-  // creating new button
-  button = document.createElement('button');
-  button.setAttribute("id", subscribeBtnId);
-  button.innerText = 'subscribe';
-  button.onclick = subscribe_channel.bind(this, channel_url)
-  return button;
-}
-
 class Button_Factory {
-  constructor(id, text, isDisabled, onClick) {
+  constructor(id, text, isDisabled, onClick, onClickBindParams) {
     this.id = id;
     this.text = text;
     this.onClick = onClick;
     this.isDisabled = isDisabled;
+    this.onClickBindParams = onClickBindParams;
   }
   get_btn() {
     let element = document.getElementById(this.id)
     if (typeof (element) !== 'undefined' && element !== null) {
       element.innerText = this.text
       element.disabled = this.isDisabled;
-      element.onclick = this.onClick
+      element.onclick = (this.onClick &&  this.onClickBindParams?.length)?? this.onClick.bind(this.onClick, ...this.onClickBindParams);
       return element;
     }
     let button = document.createElement('button');
