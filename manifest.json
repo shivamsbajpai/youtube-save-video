@@ -11,6 +11,7 @@
         {
             "matches": ["*://*.youtube.com/*"],
             "js": ["app.js"],
+            "css": ["styles/style.css"],
             "run_at": "document_end"
         }
     ]

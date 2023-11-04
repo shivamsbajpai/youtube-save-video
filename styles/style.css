@@ -1,0 +1,13 @@
+.btn {
+  background-color: #4D7298; /* Green */
+  border: none;
+  color: white;
+  padding: 8px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 14px;
+  margin: 4px 4px;
+  cursor: pointer;
+  border-radius: 4px;
+}

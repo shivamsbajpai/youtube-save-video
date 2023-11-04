@@ -1,12 +1,19 @@
 const bookmarkBtnId = 'fe-bookmark-btn-id'
+
 const subscribeBtnId = 'fe-subscribe-btn-id'
 
-const activeBtnText = 'bookmark'
-const inactiveBtnText = 'bookmarked'
+const activeBtnText = 'save'
+const inactiveBtnText = 'saved'
 
 const activeSubscribeBtnText = 'subscribe'
 const loadBtnText = 'loading'
 const inactiveSubscribeBtnText = 'subscribed'
+
+let link = document.createElement('link');
+link.rel = 'stylesheet';
+link.type = 'text/css';
+link.href = 'styles/style.css';
+document.getElementsByTagName('HEAD')[0].appendChild(link);
 
 function start_application() {
   const currentUrl = window.location.href;
@@ -51,13 +58,18 @@ class Button_Factory {
     this.onClick = onClick;
     this.isDisabled = isDisabled;
     this.onClickBindParams = onClickBindParams;
+    this.css_class = 'btn'
   }
   get_btn() {
     let element = document.getElementById(this.id)
     if (typeof (element) !== 'undefined' && element !== null) {
       element.innerText = this.text
       element.disabled = this.isDisabled;
-      element.onclick = (this.onClick &&  this.onClickBindParams?.length)?? this.onClick.bind(this.onClick, ...this.onClickBindParams);
+      if(this.onClick != null && this.onClickBindParams?.length) {
+        element.onclick = this.onClick.bind(this.onClick, ...this.onClickBindParams);
+      }
+      element.className = this.css_class
+      console.log(element)
       return element;
     }
     let button = document.createElement('button');
@@ -65,6 +77,7 @@ class Button_Factory {
     button.innerText = this.text;
     button.disabled = this.isDisabled;
     button.onclick = this.onClick;
+    button.className = this.css_class
     return button;
   }
 
