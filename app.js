@@ -2,12 +2,12 @@ const bookmarkBtnId = 'fe-bookmark-btn-id'
 
 const subscribeBtnId = 'fe-subscribe-btn-id'
 
-const activeBtnText = 'save'
-const inactiveBtnText = 'saved'
+const activeBtnText = 'Save'
+const inactiveBtnText = 'Saved'
 
-const activeSubscribeBtnText = 'subscribe'
-const loadBtnText = 'loading'
-const inactiveSubscribeBtnText = 'subscribed'
+const activeSubscribeBtnText = 'Subscribe'
+const loadBtnText = 'Loading'
+const inactiveSubscribeBtnText = 'Subscribed'
 
 let link = document.createElement('link');
 link.rel = 'stylesheet';
@@ -67,6 +67,8 @@ class Button_Factory {
       element.disabled = this.isDisabled;
       if(this.onClick != null && this.onClickBindParams?.length) {
         element.onclick = this.onClick.bind(this.onClick, ...this.onClickBindParams);
+      } else {
+        element.onclick = this.onClick
       }
       element.className = this.css_class
       console.log(element)
@@ -76,7 +78,11 @@ class Button_Factory {
     button.setAttribute("id", this.id);
     button.innerText = this.text;
     button.disabled = this.isDisabled;
-    button.onclick = this.onClick;
+    if(this.onClick != null && this.onClickBindParams?.length) {
+      button.onclick = this.onClick.bind(this.onClick, ...this.onClickBindParams);
+    } else {
+      button.onclick = this.onclick
+    }
     button.className = this.css_class
     return button;
   }
