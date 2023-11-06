@@ -9,12 +9,6 @@ const activeSubscribeBtnText = 'Subscribe'
 const loadBtnText = 'Loading'
 const inactiveSubscribeBtnText = 'Subscribed'
 
-let link = document.createElement('link');
-link.rel = 'stylesheet';
-link.type = 'text/css';
-link.href = 'styles/style.css';
-document.getElementsByTagName('HEAD')[0].appendChild(link);
-
 function start_application() {
   const currentUrl = window.location.href;
   const subscribe_load_button = new Button_Factory(subscribeBtnId, loadBtnText, true, null)
