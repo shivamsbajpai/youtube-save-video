@@ -11,28 +11,65 @@ const inactiveSubscribeBtnText = 'Subscribed'
 
 function start_application() {
   const currentUrl = window.location.href;
-  const subscribe_load_button = new Button_Factory(subscribeBtnId, loadBtnText, true, null)
-  display_button_in_youtube(subscribe_load_button.get_btn())
+  ele = document.getElementById(subscribeBtnId)
+  console.log(ele)
+  if (ele === null) {
+    const subscribe_load_button = new Button_Factory(subscribeBtnId, loadBtnText, true, null)
+    display_button_in_youtube(subscribe_load_button.get_btn())
+  } else {
+    ele.innerText= loadBtnText
+    ele.disabled = true;
+  }
   fetch_channel_url().then(function (channelURL) {
     id = get_youtube_video_id(currentUrl)
     if (channel_exists(channelURL)) {
-      const inactive_subscribe_btn = new Button_Factory(subscribeBtnId, inactiveSubscribeBtnText, true, null)
-      display_button_in_youtube(inactive_subscribe_btn.get_btn())
+      ele = document.getElementById(subscribeBtnId)
+      console.log(ele)
+      if (ele === null) {
+        const inactive_subscribe_btn = new Button_Factory(subscribeBtnId, inactiveSubscribeBtnText, true, null)
+        display_button_in_youtube(inactive_subscribe_btn.get_btn())
+      } else {
+        ele.innerText= inactiveSubscribeBtnText
+        ele.disabled = true;
+      }
     } else {
-      const active_subscribe_btn = new Button_Factory(subscribeBtnId, activeSubscribeBtnText, false, subscribe_channel, [channelURL])
-      let btn = active_subscribe_btn.get_btn()
-      display_button_in_youtube(btn)
+      ele = document.getElementById(subscribeBtnId)
+      console.log(ele)
+      if (ele === null) {
+        const active_subscribe_btn = new Button_Factory(subscribeBtnId, activeSubscribeBtnText, false, subscribe_channel, [channelURL])
+        display_button_in_youtube(active_subscribe_btn.get_btn())
+      } else {
+        ele.innerText= activeSubscribeBtnText
+        ele.onclick = function () {
+          subscribe_channel(channelURL)
+        };
+        ele.disabled = false
+      }
     }
   })
   if (bookmark_exists(currentUrl)) {
-    const inactive_bookmark_btn = new Button_Factory(bookmarkBtnId, inactiveBtnText, true, null)
-    display_button_in_youtube(inactive_bookmark_btn.get_btn())
+    ele = document.getElementById(bookmarkBtnId)
+    console.log(ele)
+    if (ele === null) {
+      const inactive_bookmark_btn = new Button_Factory(bookmarkBtnId, inactiveBtnText, true, null)
+      display_button_in_youtube(inactive_bookmark_btn.get_btn())
+    } else {
+      ele.innerText= inactiveBtnText
+      ele.disabled = true;
+    }
   } else {
-    const active_bookmark_btn = new Button_Factory(bookmarkBtnId, activeBtnText, false, bookmark_current_url)
-    display_button_in_youtube(active_bookmark_btn.get_btn())
+    ele = document.getElementById(bookmarkBtnId)
+    console.log(ele)
+    if (ele === null) {
+      const active_bookmark_btn = new Button_Factory(bookmarkBtnId, activeBtnText, false, bookmark_current_url)
+      display_button_in_youtube(active_bookmark_btn.get_btn())
+    } else {
+      ele.innerText= activeBtnText
+      ele.onclick = bookmark_current_url
+      ele.disabled = false
+    }
   }
 }
-
 
 function get_youtube_video_id(url) {
   var regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
@@ -59,7 +96,7 @@ class Button_Factory {
     if (typeof (element) !== 'undefined' && element !== null) {
       element.innerText = this.text
       element.disabled = this.isDisabled;
-      if(this.onClick != null && this.onClickBindParams?.length) {
+      if (this.onClick != null && this.onClickBindParams?.length) {
         element.onclick = this.onClick.bind(this.onClick, ...this.onClickBindParams);
       } else {
         element.onclick = this.onClick
@@ -72,7 +109,7 @@ class Button_Factory {
     button.setAttribute("id", this.id);
     button.innerText = this.text;
     button.disabled = this.isDisabled;
-    if(this.onClick != null && this.onClickBindParams?.length) {
+    if (this.onClick != null && this.onClickBindParams?.length) {
       button.onclick = this.onClick.bind(this.onClick, ...this.onClickBindParams);
     } else {
       button.onclick = this.onclick
@@ -87,6 +124,8 @@ async function callYoutubeAPI(video_id) {
   url = `https://yt.lemnoslife.com/noKey/videos?part=snippet&id=${video_id}`
   const response = await fetch(url);
   const respJson = await response.json();
+  console.log(respJson)
+  console.log(url)
   return respJson["items"][0]["snippet"]["channelId"]
 }
 
@@ -101,8 +140,10 @@ function bookmark_current_url() {
   if (!bookmark_exists(currentUrl)) {
     store_bookmark(currentUrl);
   }
-  const inactive_bookmark_btn = new Button_Factory(bookmarkBtnId, inactiveBtnText, true, null)
-  display_button_in_youtube(inactive_bookmark_btn.get_btn())
+  ele = document.getElementById(bookmarkBtnId)
+  console.log(ele)
+  ele.innerText= inactiveBtnText
+  ele.disabled = true;
 }
 
 function store_bookmark(new_bookmark) {
@@ -116,8 +157,10 @@ function subscribe_channel(channel_url) {
   if (!channel_exists(channel_url)) {
     store_channel(channel_url)
   }
-  const inactive_subscribe_btn = new Button_Factory(subscribeBtnId, inactiveSubscribeBtnText, true, null)
-  display_button_in_youtube(inactive_subscribe_btn.get_btn())
+  ele = document.getElementById(subscribeBtnId)
+  console.log(ele)
+  ele.innerText= inactiveSubscribeBtnText
+  ele.disabled = true;
 }
 
 function store_channel(channel_url) {
