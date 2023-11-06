@@ -12,59 +12,49 @@ const inactiveSubscribeBtnText = 'Subscribed'
 function start_application() {
   const currentUrl = window.location.href;
   ele = document.getElementById(subscribeBtnId)
-  console.log(ele)
   if (ele === null) {
     const subscribe_load_button = new Button_Factory(subscribeBtnId, loadBtnText, true, null)
     display_button_in_youtube(subscribe_load_button.get_btn())
   } else {
-    ele.innerText= loadBtnText
+    ele.innerText = loadBtnText
     ele.disabled = true;
   }
   fetch_channel_url().then(function (channelURL) {
-    id = get_youtube_video_id(currentUrl)
-    if (channel_exists(channelURL)) {
-      ele = document.getElementById(subscribeBtnId)
-      console.log(ele)
-      if (ele === null) {
-        const inactive_subscribe_btn = new Button_Factory(subscribeBtnId, inactiveSubscribeBtnText, true, null)
-        display_button_in_youtube(inactive_subscribe_btn.get_btn())
-      } else {
-        ele.innerText= inactiveSubscribeBtnText
+    if (channelURL !== "") {
+      if (channel_exists(channelURL)) {
+        ele = document.getElementById(subscribeBtnId)
+        ele.innerText = inactiveSubscribeBtnText
         ele.disabled = true;
-      }
-    } else {
-      ele = document.getElementById(subscribeBtnId)
-      console.log(ele)
-      if (ele === null) {
-        const active_subscribe_btn = new Button_Factory(subscribeBtnId, activeSubscribeBtnText, false, subscribe_channel, [channelURL])
-        display_button_in_youtube(active_subscribe_btn.get_btn())
       } else {
-        ele.innerText= activeSubscribeBtnText
+        ele = document.getElementById(subscribeBtnId)
+        ele.innerText = activeSubscribeBtnText
         ele.onclick = function () {
           subscribe_channel(channelURL)
         };
         ele.disabled = false
       }
+    } else {
+      ele = document.getElementById(subscribeBtnId)
+      ele.innerText = 'Unavailable'
+      ele.disabled = true;
     }
   })
   if (bookmark_exists(currentUrl)) {
     ele = document.getElementById(bookmarkBtnId)
-    console.log(ele)
     if (ele === null) {
       const inactive_bookmark_btn = new Button_Factory(bookmarkBtnId, inactiveBtnText, true, null)
       display_button_in_youtube(inactive_bookmark_btn.get_btn())
     } else {
-      ele.innerText= inactiveBtnText
+      ele.innerText = inactiveBtnText
       ele.disabled = true;
     }
   } else {
     ele = document.getElementById(bookmarkBtnId)
-    console.log(ele)
     if (ele === null) {
       const active_bookmark_btn = new Button_Factory(bookmarkBtnId, activeBtnText, false, bookmark_current_url)
       display_button_in_youtube(active_bookmark_btn.get_btn())
     } else {
-      ele.innerText= activeBtnText
+      ele.innerText = activeBtnText
       ele.onclick = bookmark_current_url
       ele.disabled = false
     }
@@ -102,7 +92,6 @@ class Button_Factory {
         element.onclick = this.onClick
       }
       element.className = this.css_class
-      console.log(element)
       return element;
     }
     let button = document.createElement('button');
@@ -112,7 +101,7 @@ class Button_Factory {
     if (this.onClick != null && this.onClickBindParams?.length) {
       button.onclick = this.onClick.bind(this.onClick, ...this.onClickBindParams);
     } else {
-      button.onclick = this.onclick
+      button.onclick = this.onClick
     }
     button.className = this.css_class
     return button;
@@ -120,19 +109,16 @@ class Button_Factory {
 
 }
 
-async function callYoutubeAPI(video_id) {
+async function getChannelIDfromYouTubeAPI(video_id) {
   url = `https://yt.lemnoslife.com/noKey/videos?part=snippet&id=${video_id}`
   const response = await fetch(url);
   const respJson = await response.json();
-  console.log(respJson)
-  console.log(url)
-  return respJson["items"][0]["snippet"]["channelId"]
+  return respJson["items"]?.length > 0 ? respJson["items"][0]["snippet"]["channelId"] : ""
 }
 
 const fetch_channel_url = async function () {
-  let channelId = await callYoutubeAPI(get_youtube_video_id(window.location.href))
-  let channelUrl = `https://youtube.com/channel/${channelId}`
-  return channelUrl
+  let channelId = await getChannelIDfromYouTubeAPI(get_youtube_video_id(window.location.href))
+  return channelId !== "" ? `https://youtube.com/channel/${channelId}` : ""
 }
 
 function bookmark_current_url() {
@@ -141,8 +127,7 @@ function bookmark_current_url() {
     store_bookmark(currentUrl);
   }
   ele = document.getElementById(bookmarkBtnId)
-  console.log(ele)
-  ele.innerText= inactiveBtnText
+  ele.innerText = inactiveBtnText
   ele.disabled = true;
 }
 
@@ -158,8 +143,7 @@ function subscribe_channel(channel_url) {
     store_channel(channel_url)
   }
   ele = document.getElementById(subscribeBtnId)
-  console.log(ele)
-  ele.innerText= inactiveSubscribeBtnText
+  ele.innerText = inactiveSubscribeBtnText
   ele.disabled = true;
 }
 
@@ -180,10 +164,7 @@ function get_existing_bookmarks_obj() {
 
 function get_existing_channels_obj() {
   let bookmarkStr = window.localStorage.getItem('channels');
-  if (bookmarkStr) {
-    return JSON.parse(bookmarkStr)
-  }
-  return [];
+  return bookmarkStr ? JSON.parse(bookmarkStr) : [];
 }
 
 function bookmark_exists(new_bookmark) {
@@ -204,6 +185,60 @@ function channel_exists(channel_url) {
     }
   }
   return false;
+}
+
+
+function start_application() {
+  const currentUrl = window.location.href;
+  ele = document.getElementById(subscribeBtnId)
+  if (ele === null) {
+    const subscribe_load_button = new Button_Factory(subscribeBtnId, loadBtnText, true, null)
+    display_button_in_youtube(subscribe_load_button.get_btn())
+  } else {
+    ele.innerText = loadBtnText
+    ele.disabled = true;
+  }
+  fetch_channel_url().then(function (channelURL) {
+    if (channelURL !== "") {
+      if (channel_exists(channelURL)) {
+        ele = document.getElementById(subscribeBtnId)
+        ele.innerText = inactiveSubscribeBtnText
+        ele.disabled = true;
+      } else {
+        ele = document.getElementById(subscribeBtnId)
+        ele.innerText = activeSubscribeBtnText
+        ele.onclick = function () {
+          subscribe_channel(channelURL)
+        };
+        ele.disabled = false
+      }
+    } else {
+      ele = document.getElementById(subscribeBtnId)
+      ele.innerText = 'Unavailable'
+      ele.disabled = true;
+    }
+
+  })
+  if (bookmark_exists(currentUrl)) {
+    ele = document.getElementById(bookmarkBtnId)
+    if (ele === null) {
+      const inactive_bookmark_btn = new Button_Factory(bookmarkBtnId, inactiveBtnText, true, null)
+      display_button_in_youtube(inactive_bookmark_btn.get_btn())
+    } else {
+      ele.innerText = inactiveBtnText
+      ele.disabled = true;
+    }
+  } else {
+    ele = document.getElementById(bookmarkBtnId)
+    if (ele === null) {
+      const active_bookmark_btn = new Button_Factory(bookmarkBtnId, activeBtnText, false, bookmark_current_url)
+      display_button_in_youtube(active_bookmark_btn.get_btn())
+    } else {
+      ele.innerText = activeBtnText
+      ele.onclick = bookmark_current_url
+      ele.disabled = false
+    }
+  }
 }
 
 
