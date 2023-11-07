@@ -10,9 +10,23 @@
     "content_scripts": [
         {
             "matches": ["*://*.youtube.com/*"],
-            "js": ["app.js"],
+            "js": ["common.js", "app.js"],
             "css": ["styles/style.css"],
             "run_at": "document_end"
         }
-    ]
+    ],
+    "background": {
+        "scripts": [
+            "background.js"
+        ]
+    },
+    "sidebar_action": {
+        "default_title": "YouTube Skin",
+        "default_panel": "sidebar.html",
+        "default_icon": "icons/icon-512.png",
+        "open_at_install": false
+    },
+    "browser_action": {
+        "default_icon": "icons/icon-512.png"
+    }  
 }
