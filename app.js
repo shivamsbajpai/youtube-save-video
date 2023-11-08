@@ -10,13 +10,13 @@ const loadBtnText = 'Loading'
 const inactiveSubscribeBtnText = 'Subscribed'
 
 
-function get_youtube_video_id(url) {
+function getYouTubeVideoId(url) {
   var regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
   var match = url.match(regExp);
   return (match && match[7].length == 11) ? match[7] : false;
 }
 
-function display_button_in_youtube(button) {
+function displayButtonInYouTube(button) {
   info_div = document.getElementById('end');
   info_div.appendChild(button);
 }
@@ -30,7 +30,7 @@ class Button_Factory {
     this.onClickBindParams = onClickBindParams;
     this.css_class = 'btn'
   }
-  get_btn() {
+  getBtn() {
     let element = document.getElementById(this.id)
     if (typeof (element) !== 'undefined' && element !== null) {
       element.innerText = this.text
@@ -69,29 +69,29 @@ async function getChannelInfoFromAPI(video_id) {
   } : null
 }
 
-const fetch_channel_url = async function () {
-  return await getChannelInfoFromAPI(get_youtube_video_id(window.location.href))
+const fetchChannelUrl = async function () {
+  return await getChannelInfoFromAPI(getYouTubeVideoId(window.location.href))
 }
 
-function bookmark_current_url() {
+function bookmarkCurrentUrl() {
   const currentUrl = window.location.href;
-  if (!bookmark_exists(currentUrl)) {
-    store_bookmark(currentUrl);
+  if (!bookmarkExists(currentUrl)) {
+    storeBookmark(currentUrl);
   }
   ele = document.getElementById(bookmarkBtnId)
   ele.innerText = inactiveBtnText
   ele.disabled = true;
 }
 
-function store_bookmark(new_bookmark) {
-  bookmarks = get_existing_bookmarks_obj()
+function storeBookmark(new_bookmark) {
+  bookmarks = getExistingBookmarksObj()
   bookmarks.push(new_bookmark);
-  localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
+  setItem('bookmarks', JSON.stringify(bookmarks));
   return true;
 }
 
-function subscribe_channel(channelInfo) {
-  if (!channel_exists(channelInfo)) {
+function subscribeChannel(channelInfo) {
+  if (!channelExists(channelInfo)) {
     store_channel(channelInfo)
   }
   ele = document.getElementById(subscribeBtnId)
@@ -100,22 +100,23 @@ function subscribe_channel(channelInfo) {
 }
 
 function store_channel(channel_url) {
-  bookmarks = get_existing_channels_obj()
-  bookmarks.push(channel_url);
-  localStorage.setItem('channels', JSON.stringify(bookmarks));
+  let channels = getExistingChannelsObj()
+  channels.push(channel_url);
+  setItem('channels', JSON.stringify(channels))
   return true;
 }
 
-function get_existing_bookmarks_obj() {
-  let bookmarkStr = window.localStorage.getItem('bookmarks');
+function getExistingBookmarksObj() {
+  let bookmarkStr = getItem('bookmarks')
+  console.log(bookmarkStr)
   if (bookmarkStr) {
     return JSON.parse(bookmarkStr)
   }
   return [];
 }
 
-function bookmark_exists(new_bookmark) {
-  bookmarks = get_existing_bookmarks_obj()
+function bookmarkExists(new_bookmark) {
+  let bookmarks = getExistingBookmarksObj()
   for (let i = 0; i < bookmarks.length; i++) {
     if (bookmarks[i] === new_bookmark) {
       return true;
@@ -124,10 +125,10 @@ function bookmark_exists(new_bookmark) {
   return false;
 }
 
-function channel_exists(info) {
-  bookmarks = get_existing_channels_obj()
-  for (let i = 0; i < bookmarks.length; i++) {
-    if (bookmarks[i]['channelURL'] === info['channelURL']) {
+function channelExists(info) {
+  let channels = getExistingChannelsObj()
+  for (let i = 0; i < channels.length; i++) {
+    if (channels[i]['channelURL'] === info['channelURL']) {
       return true;
     }
   }
@@ -135,19 +136,19 @@ function channel_exists(info) {
 }
 
 
-function start_application() {
+function startApplication() {
   const currentUrl = window.location.href;
   ele = document.getElementById(subscribeBtnId)
   if (ele === null) {
     const subscribe_load_button = new Button_Factory(subscribeBtnId, loadBtnText, true, null)
-    display_button_in_youtube(subscribe_load_button.get_btn())
+    displayButtonInYouTube(subscribe_load_button.getBtn())
   } else {
     ele.innerText = loadBtnText
     ele.disabled = true;
   }
-  fetch_channel_url().then(function (channelInfo) {
+  fetchChannelUrl().then(function (channelInfo) {
     if (channelInfo) {
-      if (channel_exists(channelInfo)) {
+      if (channelExists(channelInfo)) {
         ele = document.getElementById(subscribeBtnId)
         ele.innerText = inactiveSubscribeBtnText
         ele.disabled = true;
@@ -155,7 +156,7 @@ function start_application() {
         ele = document.getElementById(subscribeBtnId)
         ele.innerText = activeSubscribeBtnText
         ele.onclick = function () {
-          subscribe_channel(channelInfo)
+          subscribeChannel(channelInfo)
         };
         ele.disabled = false
       }
@@ -166,11 +167,11 @@ function start_application() {
     }
 
   })
-  if (bookmark_exists(currentUrl)) {
+  if (bookmarkExists(currentUrl)) {
     ele = document.getElementById(bookmarkBtnId)
     if (ele === null) {
       const inactive_bookmark_btn = new Button_Factory(bookmarkBtnId, inactiveBtnText, true, null)
-      display_button_in_youtube(inactive_bookmark_btn.get_btn())
+      displayButtonInYouTube(inactive_bookmark_btn.getBtn())
     } else {
       ele.innerText = inactiveBtnText
       ele.disabled = true;
@@ -178,11 +179,11 @@ function start_application() {
   } else {
     ele = document.getElementById(bookmarkBtnId)
     if (ele === null) {
-      const active_bookmark_btn = new Button_Factory(bookmarkBtnId, activeBtnText, false, bookmark_current_url)
-      display_button_in_youtube(active_bookmark_btn.get_btn())
+      const active_bookmark_btn = new Button_Factory(bookmarkBtnId, activeBtnText, false, bookmarkCurrentUrl)
+      displayButtonInYouTube(active_bookmark_btn.getBtn())
     } else {
       ele.innerText = activeBtnText
-      ele.onclick = bookmark_current_url
+      ele.onclick = bookmarkCurrentUrl
       ele.disabled = false
     }
   }
@@ -193,7 +194,7 @@ let previousUrl = '';
 let observer = new MutationObserver(function (mutations) {
   if (location.href !== previousUrl) {
     previousUrl = location.href;
-    start_application()
+    startApplication()
   }
 });
 
