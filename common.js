@@ -1,12 +1,25 @@
-function getItem(key) {
-  return window.localStorage.getItem(key)
+async function getItem(key) {
+  let stats = await browser.storage.local.get();
+  let data = stats["ext"]
+  if(data) {
+    return data[key]
+  }
+  return null 
 }
 
-function setItem(key, val) {
-  localStorage.setItem(key, val);
+async function setItem(key, val) {
+  let data = await browser.storage.local.get();
+  if(Object.keys(data).length === 0) {
+    data = {
+      "ext": {}
+    }
+  }
+  data["ext"][key] = val
+  browser.storage.local.set(data, function () {
+  });
 }
 
-function getExistingChannelsObj() {
-  let bookmarkStr = getItem('channels');
+async function getExistingChannelsObj() {
+  let bookmarkStr = await getItem('channels');
   return bookmarkStr ? JSON.parse(bookmarkStr) : [];
 }

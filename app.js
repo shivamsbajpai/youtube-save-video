@@ -62,36 +62,54 @@ async function getChannelInfoFromAPI(video_id) {
   url = `https://yt.lemnoslife.com/noKey/videos?part=snippet&id=${video_id}`
   const response = await fetch(url);
   const respJson = await response.json();
-  return respJson["items"]?.length > 0 ? {
-    "channelId": respJson["items"][0]["snippet"]["channelId"],
-    "channelTitle": respJson["items"][0]["snippet"]["channelTitle"],
-    "channelURL": `https://youtube.com/channel/${respJson["items"][0]["snippet"]["channelId"]}`
-  } : null
+  return new Promise(function(resolve, reject){
+    if(respJson["items"]?.length > 0) {
+      resolve({
+        "channelId": respJson["items"][0]["snippet"]["channelId"],
+        "channelTitle": respJson["items"][0]["snippet"]["channelTitle"],
+        "channelURL": `https://youtube.com/channel/${respJson["items"][0]["snippet"]["channelId"]}`
+      })
+    } else {
+      const err = new Error("could not fetch data")
+      reject(err)
+    }
+  })
 }
 
 const fetchChannelUrl = async function () {
   return await getChannelInfoFromAPI(getYouTubeVideoId(window.location.href))
 }
 
-function bookmarkCurrentUrl() {
+async function bookmarkCurrentUrl() {
   const currentUrl = window.location.href;
-  if (!bookmarkExists(currentUrl)) {
-    storeBookmark(currentUrl);
+  const videoId = getYouTubeVideoId(currentUrl)
+  const check = await bookmarkExists(currentUrl)
+  if (!check) {
+    storeBookmark(videoId, currentUrl);
   }
   ele = document.getElementById(bookmarkBtnId)
   ele.innerText = inactiveBtnText
   ele.disabled = true;
 }
 
-function storeBookmark(new_bookmark) {
-  bookmarks = getExistingBookmarksObj()
-  bookmarks.push(new_bookmark);
+async function storeBookmark(video_id, new_bookmark) {
+  const bookmarks = await getExistingBookmarksObj()
+  const baseUrl = 'https://yt.lemnoslife.com/noKey/videos?part=snippet&id=';
+  const url = baseUrl + video_id
+  const response = await fetch(url)
+  const respJson = await response.json()
+  const title = respJson['items'][0]['snippet']['title']
+  bookmarks.push({
+    "videoId": video_id,
+    "url": new_bookmark,
+    "title": title
+  });
   setItem('bookmarks', JSON.stringify(bookmarks));
-  return true;
 }
 
-function subscribeChannel(channelInfo) {
-  if (!channelExists(channelInfo)) {
+async function subscribeChannel(channelInfo) {
+  const check = await channelExists(channelInfo)
+  if (!check) {
     store_channel(channelInfo)
   }
   ele = document.getElementById(subscribeBtnId)
@@ -99,34 +117,33 @@ function subscribeChannel(channelInfo) {
   ele.disabled = true;
 }
 
-function store_channel(channel_url) {
-  let channels = getExistingChannelsObj()
+async function store_channel(channel_url) {
+  let channels = await getExistingChannelsObj()
   channels.push(channel_url);
   setItem('channels', JSON.stringify(channels))
   return true;
 }
 
-function getExistingBookmarksObj() {
-  let bookmarkStr = getItem('bookmarks')
-  console.log(bookmarkStr)
+async function getExistingBookmarksObj() {
+  let bookmarkStr = await getItem('bookmarks')
   if (bookmarkStr) {
     return JSON.parse(bookmarkStr)
   }
   return [];
 }
 
-function bookmarkExists(new_bookmark) {
-  let bookmarks = getExistingBookmarksObj()
+async function bookmarkExists(new_bookmark) {
+  let bookmarks = await getExistingBookmarksObj()
   for (let i = 0; i < bookmarks.length; i++) {
-    if (bookmarks[i] === new_bookmark) {
+    if (bookmarks[i]["url"] === new_bookmark) {
       return true;
     }
   }
   return false;
 }
 
-function channelExists(info) {
-  let channels = getExistingChannelsObj()
+async function channelExists(info) {
+  let channels = await getExistingChannelsObj()
   for (let i = 0; i < channels.length; i++) {
     if (channels[i]['channelURL'] === info['channelURL']) {
       return true;
@@ -136,7 +153,7 @@ function channelExists(info) {
 }
 
 
-function startApplication() {
+async function startApplication() {
   const currentUrl = window.location.href;
   ele = document.getElementById(subscribeBtnId)
   if (ele === null) {
@@ -146,28 +163,29 @@ function startApplication() {
     ele.innerText = loadBtnText
     ele.disabled = true;
   }
-  fetchChannelUrl().then(function (channelInfo) {
-    if (channelInfo) {
-      if (channelExists(channelInfo)) {
-        ele = document.getElementById(subscribeBtnId)
-        ele.innerText = inactiveSubscribeBtnText
-        ele.disabled = true;
-      } else {
-        ele = document.getElementById(subscribeBtnId)
-        ele.innerText = activeSubscribeBtnText
-        ele.onclick = function () {
-          subscribeChannel(channelInfo)
-        };
-        ele.disabled = false
-      }
+  try {
+    const channelInfo = await fetchChannelUrl()
+    const check = await channelExists(channelInfo)
+    if (check) {
+      ele = document.getElementById(subscribeBtnId)
+      ele.innerText = inactiveSubscribeBtnText
+      ele.disabled = true;
     } else {
       ele = document.getElementById(subscribeBtnId)
-      ele.innerText = 'Unavailable'
-      ele.disabled = true;
+      ele.innerText = activeSubscribeBtnText
+      ele.onclick = function () {
+        subscribeChannel(channelInfo)
+      };
+      ele.disabled = false
     }
+  } catch(err) {
+    ele = document.getElementById(subscribeBtnId)
+    ele.innerText = 'Unavailable'
+    ele.disabled = true;
+  }
 
-  })
-  if (bookmarkExists(currentUrl)) {
+  const check = await bookmarkExists(currentUrl)
+  if (check) {
     ele = document.getElementById(bookmarkBtnId)
     if (ele === null) {
       const inactive_bookmark_btn = new Button_Factory(bookmarkBtnId, inactiveBtnText, true, null)

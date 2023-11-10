@@ -6,7 +6,7 @@
     "icons": {
         "512": "icons/icon-512.png"
     },
-    "permissions": ["activeTab", "contextMenus", "https://yt.lemnoslife.com/*"],
+    "permissions": ["storage", "activeTab", "contextMenus", "https://yt.lemnoslife.com/*"],
     "content_scripts": [
         {
             "matches": ["*://*.youtube.com/*"],
