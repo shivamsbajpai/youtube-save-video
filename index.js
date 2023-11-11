@@ -14,7 +14,7 @@ async function getData() {
   const bookmarkObj = JSON.parse(bookmarkStr)
 
   const bookEle = document.getElementById("bookmark-list")
-  for (let i = 0; i < bookmarkObj.length; i++) {
+  for (let i = 0; i < bookmarkObj?.length; i++) {
     let link = document.createElement('a')
     link.href = bookmarkObj[i]['url']
 
@@ -31,7 +31,7 @@ async function getData() {
   const channelObj = JSON.parse(channelsStr)
 
   const channelEle = document.getElementById("channel-list")
-  for (let i = 0; i < channelObj.length; i++) {
+  for (let i = 0; i < channelObj?.length; i++) {
 
     let link = document.createElement('a')
     link.href = channelObj[i]['channelURL']

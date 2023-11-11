@@ -62,8 +62,8 @@ async function getChannelInfoFromAPI(video_id) {
   url = `https://yt.lemnoslife.com/noKey/videos?part=snippet&id=${video_id}`
   const response = await fetch(url);
   const respJson = await response.json();
-  return new Promise(function(resolve, reject){
-    if(respJson["items"]?.length > 0) {
+  return new Promise(function (resolve, reject) {
+    if (respJson["items"]?.length > 0) {
       resolve({
         "channelId": respJson["items"][0]["snippet"]["channelId"],
         "channelTitle": respJson["items"][0]["snippet"]["channelTitle"],
@@ -152,10 +152,8 @@ async function channelExists(info) {
   return false;
 }
 
-
-async function startApplication() {
-  const currentUrl = window.location.href;
-  ele = document.getElementById(subscribeBtnId)
+function subscribeLoadButton() {
+  const ele = document.getElementById(subscribeBtnId)
   if (ele === null) {
     const subscribe_load_button = new Button_Factory(subscribeBtnId, loadBtnText, true, null)
     displayButtonInYouTube(subscribe_load_button.getBtn())
@@ -163,31 +161,51 @@ async function startApplication() {
     ele.innerText = loadBtnText
     ele.disabled = true;
   }
+}
+
+function bookmarkLoadButton() {
+  const ele = document.getElementById(bookmarkBtnId)
+  if (ele === null) {
+    const loadBtn = new Button_Factory(bookmarkBtnId, loadBtnText, true, null)
+    displayButtonInYouTube(loadBtn.getBtn())
+  } else {
+    ele.innerText = loadBtnText
+    ele.disabled = true;
+  }
+}
+
+async function startApplication() {
+  const currentUrl = window.location.href;
+  subscribeLoadButton();
+  bookmarkLoadButton()
+
   try {
     const channelInfo = await fetchChannelUrl()
     const check = await channelExists(channelInfo)
     if (check) {
-      ele = document.getElementById(subscribeBtnId)
+      const ele = document.getElementById(subscribeBtnId)
       ele.innerText = inactiveSubscribeBtnText
       ele.disabled = true;
     } else {
-      ele = document.getElementById(subscribeBtnId)
+      const ele = document.getElementById(subscribeBtnId)
       ele.innerText = activeSubscribeBtnText
       ele.onclick = function () {
         subscribeChannel(channelInfo)
       };
       ele.disabled = false
     }
-  } catch(err) {
-    ele = document.getElementById(subscribeBtnId)
+  } catch (err) {
+    const ele = document.getElementById(subscribeBtnId)
     ele.innerText = 'Unavailable'
     ele.disabled = true;
   }
 
-  const check = await bookmarkExists(currentUrl)
-  if (check) {
-    ele = document.getElementById(bookmarkBtnId)
+  const exists = await bookmarkExists(currentUrl)
+  if (exists) {
+    const ele = document.getElementById(bookmarkBtnId)
     if (ele === null) {
+      // this should not happen 
+      // keep track of bug here
       const inactive_bookmark_btn = new Button_Factory(bookmarkBtnId, inactiveBtnText, true, null)
       displayButtonInYouTube(inactive_bookmark_btn.getBtn())
     } else {
@@ -195,8 +213,9 @@ async function startApplication() {
       ele.disabled = true;
     }
   } else {
-    ele = document.getElementById(bookmarkBtnId)
+    const ele = document.getElementById(bookmarkBtnId)
     if (ele === null) {
+      // this should not happen
       const active_bookmark_btn = new Button_Factory(bookmarkBtnId, activeBtnText, false, bookmarkCurrentUrl)
       displayButtonInYouTube(active_bookmark_btn.getBtn())
     } else {
