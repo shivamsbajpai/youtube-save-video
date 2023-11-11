@@ -7,6 +7,7 @@ const inactiveBtnText = 'Saved'
 
 const activeSubscribeBtnText = 'Subscribe'
 const loadBtnText = 'Loading'
+const unavailableText = 'Unavailable'
 const inactiveSubscribeBtnText = 'Subscribed'
 
 
@@ -76,24 +77,14 @@ async function getChannelInfoFromAPI(video_id) {
   })
 }
 
-const fetchChannelUrl = async function () {
-  return await getChannelInfoFromAPI(getYouTubeVideoId(window.location.href))
-}
-
-async function bookmarkCurrentUrl() {
-  const currentUrl = window.location.href;
-  const videoId = getYouTubeVideoId(currentUrl)
-  const check = await bookmarkExists(currentUrl)
-  if (!check) {
-    storeBookmark(videoId, currentUrl);
-  }
+async function bookmarkCurrentUrl(videoId, currentUrl, bookmarks) {
+  storeBookmark(videoId, currentUrl, bookmarks);
   ele = document.getElementById(bookmarkBtnId)
   ele.innerText = inactiveBtnText
   ele.disabled = true;
 }
 
-async function storeBookmark(video_id, new_bookmark) {
-  const bookmarks = await getExistingBookmarksObj()
+async function storeBookmark(video_id, new_bookmark, bookmarks) {
   const baseUrl = 'https://yt.lemnoslife.com/noKey/videos?part=snippet&id=';
   const url = baseUrl + video_id
   const response = await fetch(url)
@@ -107,19 +98,15 @@ async function storeBookmark(video_id, new_bookmark) {
   setItem('bookmarks', JSON.stringify(bookmarks));
 }
 
-async function subscribeChannel(channelInfo) {
-  const check = await channelExists(channelInfo)
-  if (!check) {
-    store_channel(channelInfo)
-  }
+async function subscribeChannel(channelInfo, channels) {
+  storeChannel(channelInfo, channels)
   ele = document.getElementById(subscribeBtnId)
   ele.innerText = inactiveSubscribeBtnText
   ele.disabled = true;
 }
 
-async function store_channel(channel_url) {
-  let channels = await getExistingChannelsObj()
-  channels.push(channel_url);
+async function storeChannel(channelInfo, channels) {
+  channels.push(channelInfo);
   setItem('channels', JSON.stringify(channels))
   return true;
 }
@@ -136,37 +123,26 @@ async function bookmarkExists(new_bookmark) {
   let bookmarks = await getExistingBookmarksObj()
   for (let i = 0; i < bookmarks.length; i++) {
     if (bookmarks[i]["url"] === new_bookmark) {
-      return true;
+      return [true, bookmarks];
     }
   }
-  return false;
+  return [false, bookmarks];
 }
 
 async function channelExists(info) {
-  let channels = await getExistingChannelsObj()
+  const channels = await getExistingChannelsObj()
   for (let i = 0; i < channels.length; i++) {
     if (channels[i]['channelURL'] === info['channelURL']) {
-      return true;
+      return [true, channels];
     }
   }
-  return false;
+  return [false, channels];
 }
 
-function subscribeLoadButton() {
-  const ele = document.getElementById(subscribeBtnId)
+function loadButton(btnId, loadBtnText) {
+  const ele = document.getElementById(btnId)
   if (ele === null) {
-    const subscribe_load_button = new Button_Factory(subscribeBtnId, loadBtnText, true, null)
-    displayButtonInYouTube(subscribe_load_button.getBtn())
-  } else {
-    ele.innerText = loadBtnText
-    ele.disabled = true;
-  }
-}
-
-function bookmarkLoadButton() {
-  const ele = document.getElementById(bookmarkBtnId)
-  if (ele === null) {
-    const loadBtn = new Button_Factory(bookmarkBtnId, loadBtnText, true, null)
+    const loadBtn = new Button_Factory(btnId, loadBtnText, true, null, null)
     displayButtonInYouTube(loadBtn.getBtn())
   } else {
     ele.innerText = loadBtnText
@@ -176,54 +152,51 @@ function bookmarkLoadButton() {
 
 async function startApplication() {
   const currentUrl = window.location.href;
-  subscribeLoadButton();
-  bookmarkLoadButton()
+  loadButton(bookmarkBtnId, loadBtnText);
+  loadButton(subscribeBtnId, loadBtnText);
+  const videoId = getYouTubeVideoId(currentUrl)
+  if(!videoId) {
+    loadButton(bookmarkBtnId, unavailableText)
+    loadButton(subscribeBtnId, unavailableText)
+    return
+  }
+  const subscribeBtn = document.getElementById(subscribeBtnId)
+  const bookmarkBtn = document.getElementById(bookmarkBtnId)
+  
+  try {
+    const [exists, bookmarks] = await bookmarkExists(currentUrl)
+    if (exists) {
+      bookmarkBtn.innerText = inactiveBtnText
+      bookmarkBtn.disabled = true;
+    } else {
+      bookmarkBtn.innerText = activeBtnText
+      bookmarkBtn.onclick = bookmarkCurrentUrl.bind(this, videoId, currentUrl, bookmarks)
+      bookmarkBtn.disabled = false
+    }
+  } catch(err) {
+    console.log(err)
+    bookmarkBtn.innerText = unavailableText
+    bookmarkBtn.disabled = true;
+  }
+
 
   try {
-    const channelInfo = await fetchChannelUrl()
-    const check = await channelExists(channelInfo)
+    const channelInfo = await getChannelInfoFromAPI(videoId)
+    const [check, channels] = await channelExists(channelInfo)
     if (check) {
-      const ele = document.getElementById(subscribeBtnId)
-      ele.innerText = inactiveSubscribeBtnText
-      ele.disabled = true;
+      subscribeBtn.innerText = inactiveSubscribeBtnText
+      subscribeBtn.disabled = true;
     } else {
-      const ele = document.getElementById(subscribeBtnId)
-      ele.innerText = activeSubscribeBtnText
-      ele.onclick = function () {
-        subscribeChannel(channelInfo)
-      };
-      ele.disabled = false
+      subscribeBtn.innerText = activeSubscribeBtnText
+      subscribeBtn.onclick = subscribeChannel.bind(this, channelInfo, channels)
+      subscribeBtn.disabled = false
     }
   } catch (err) {
-    const ele = document.getElementById(subscribeBtnId)
-    ele.innerText = 'Unavailable'
-    ele.disabled = true;
+    console.log(err)
+    subscribeBtn.innerText = unavailableText
+    subscribeBtn.disabled = true;
   }
 
-  const exists = await bookmarkExists(currentUrl)
-  if (exists) {
-    const ele = document.getElementById(bookmarkBtnId)
-    if (ele === null) {
-      // this should not happen 
-      // keep track of bug here
-      const inactive_bookmark_btn = new Button_Factory(bookmarkBtnId, inactiveBtnText, true, null)
-      displayButtonInYouTube(inactive_bookmark_btn.getBtn())
-    } else {
-      ele.innerText = inactiveBtnText
-      ele.disabled = true;
-    }
-  } else {
-    const ele = document.getElementById(bookmarkBtnId)
-    if (ele === null) {
-      // this should not happen
-      const active_bookmark_btn = new Button_Factory(bookmarkBtnId, activeBtnText, false, bookmarkCurrentUrl)
-      displayButtonInYouTube(active_bookmark_btn.getBtn())
-    } else {
-      ele.innerText = activeBtnText
-      ele.onclick = bookmarkCurrentUrl
-      ele.disabled = false
-    }
-  }
 }
 
 

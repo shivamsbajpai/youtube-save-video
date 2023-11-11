@@ -7,42 +7,41 @@ async function getItem(key) {
   return null
 }
 
-
-
 async function getData() {
   const bookmarkStr = await getItem('bookmarks')
-  const bookmarkObj = JSON.parse(bookmarkStr)
+  if (bookmarkStr) {
+    const bookmarkObj = JSON.parse(bookmarkStr)
+    const bookEle = document.getElementById("bookmark-list")
+    for (let i = 0; i < bookmarkObj?.length; i++) {
+      let link = document.createElement('a')
+      link.href = bookmarkObj[i]['url']
 
-  const bookEle = document.getElementById("bookmark-list")
-  for (let i = 0; i < bookmarkObj?.length; i++) {
-    let link = document.createElement('a')
-    link.href = bookmarkObj[i]['url']
+      let listEle = document.createElement('li')
+      listEle.innerHTML = bookmarkObj[i]['title']
 
-    let listEle = document.createElement('li')
-    listEle.innerHTML = bookmarkObj[i]['title']
-
-    link.append(listEle)
-    bookEle.append(link)
+      link.append(listEle)
+      bookEle.append(link)
+    }
   }
 
 
   const channelsStr = await getItem('channels')
+  if (channelsStr) {
+    const channelObj = JSON.parse(channelsStr)
+    const channelEle = document.getElementById("channel-list")
+    for (let i = 0; i < channelObj?.length; i++) {
 
-  const channelObj = JSON.parse(channelsStr)
+      let link = document.createElement('a')
+      link.href = channelObj[i]['channelURL']
 
-  const channelEle = document.getElementById("channel-list")
-  for (let i = 0; i < channelObj?.length; i++) {
+      let listEle = document.createElement('li')
+      listEle.innerHTML = channelObj[i]['channelTitle']
 
-    let link = document.createElement('a')
-    link.href = channelObj[i]['channelURL']
-
-    let listEle = document.createElement('li')
-    listEle.innerHTML = channelObj[i]['channelTitle']
-
-
-    link.append(listEle)
-    channelEle.append(link)
+      link.append(listEle)
+      channelEle.append(link)
+    }
   }
+
 }
 
 getData()
