@@ -8,7 +8,7 @@ function onError(error) {
 
 browser.browserAction.onClicked.addListener(() => {
   let creating = browser.tabs.create({
-    url: "./index.html",
+    url: "./settings.html",
   });
   creating.then(onCreated, onError);
 });
