@@ -22,4 +22,4 @@ go.work
 .vs_code
 .web-extension-id
 *.zip
-*.xpi
+web-ext-artifacts/
