@@ -1,35 +1,15 @@
-async function getItem(key) {
-  let stats = await browser.storage.local.get();
-  let data = stats["ext"]
-  if (data) {
-    return data[key]
-  }
-  return null
-}
+"use strict";
 
-async function setItem(key, val) {
-  let data = await browser.storage.local.get();
-  if (Object.keys(data).length === 0) {
-    data = {
-      "ext": {}
-    }
-  }
-  data["ext"][key] = val
-  browser.storage.local.set(data, function () {
-  });
-}
-
-
-const bookmarks = 'bookmarks'
+const bookmarksStr = 'bookmarks'
 const bookmarkListId = "bookmark-list"
 
-const channels = 'channels'
+const channelsStr = 'channels'
 const channelsListId = "channel-list"
 
 async function getData() {
-  const bookmarkStr = await getItem(bookmarks)
-  if (bookmarkStr) {
-    const bookmarkObj = JSON.parse(bookmarkStr)
+  const bookmarkItem = await getItem(bookmarksStr)
+  if (bookmarkItem) {
+    const bookmarkObj = JSON.parse(bookmarkItem)
     const bookEle = document.getElementById(bookmarkListId)
     for (let i = 0; i < bookmarkObj?.length; i++) {
       let link = document.createElement('a')
@@ -43,9 +23,9 @@ async function getData() {
     }
   }
 
-  const channelsStr = await getItem(channels)
-  if (channelsStr) {
-    const channelObj = JSON.parse(channelsStr)
+  const channelsItem = await getItem(channelsStr)
+  if (channelsItem) {
+    const channelObj = JSON.parse(channelsItem)
     const channelEle = document.getElementById(channelsListId)
     for (let i = 0; i < channelObj?.length; i++) {
 
@@ -105,23 +85,23 @@ function loadFile() {
 
 async function importData(data) {
   const obj = JSON.parse(data)
-  const imBookmarksStr = obj[bookmarks]
+  const imBookmarksStr = obj[bookmarksStr]
   const imBookmarksArray = JSON.parse(imBookmarksStr)
 
-  const imChannelsStr = obj[channels]
+  const imChannelsStr = obj[channelsStr]
   const imChannelsArray = JSON.parse(imChannelsStr)
 
   const existingData = await browser.storage.local.get();
   const extenDataVal = existingData["ext"]
   if (extenDataVal) {
-    let oldBookmarksStr = extenDataVal[bookmarks]
+    let oldBookmarksStr = extenDataVal[bookmarksStr]
     let bookmarksArray = []
     if (oldBookmarksStr) {
       bookmarksArray = JSON.parse(oldBookmarksStr)
       bookmarksArray = bookmarksArray.concat(imBookmarksArray)
     }
 
-    let oldChannelsStr = extenDataVal[channels]
+    let oldChannelsStr = extenDataVal[channelsStr]
     let channelsArray = []
     if (oldChannelsStr) {
       channelsArray = JSON.parse(oldChannelsStr)
@@ -129,11 +109,11 @@ async function importData(data) {
     }
 
     await browser.storage.local.clear()
-    await setItem(bookmarks, JSON.stringify(bookmarksArray))
-    await setItem(channels, JSON.stringify(channelsArray))
+    await setItem(bookmarksStr, JSON.stringify(bookmarksArray))
+    await setItem(channelsStr, JSON.stringify(channelsArray))
   } else {
-    await setItem(bookmarks, JSON.stringify(imBookmarksArray))
-    await setItem(channels, JSON.stringify(imChannelsArray))
+    await setItem(bookmarksStr, JSON.stringify(imBookmarksArray))
+    await setItem(channelsStr, JSON.stringify(imChannelsArray))
   }
   location.reload()
 }

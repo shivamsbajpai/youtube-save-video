@@ -1,3 +1,5 @@
+"use strict";
+
 const bookmarkBtnId = 'fe-bookmark-btn-id'
 
 const subscribeBtnId = 'fe-subscribe-btn-id'
@@ -18,7 +20,7 @@ function getYouTubeVideoId(url) {
 }
 
 function displayButtonInYouTube(button) {
-  info_div = document.getElementById('end');
+  const info_div = document.getElementById('end');
   info_div.appendChild(button);
 }
 
@@ -32,7 +34,7 @@ class Button_Factory {
     this.css_class = 'btn'
   }
   getBtn() {
-    let element = document.getElementById(this.id)
+    const element = document.getElementById(this.id)
     if (typeof (element) !== 'undefined' && element !== null) {
       element.innerText = this.text
       element.disabled = this.isDisabled;
@@ -44,7 +46,7 @@ class Button_Factory {
       element.className = this.css_class
       return element;
     }
-    let button = document.createElement('button');
+    const button = document.createElement('button');
     button.setAttribute("id", this.id);
     button.innerText = this.text;
     button.disabled = this.isDisabled;
@@ -60,7 +62,7 @@ class Button_Factory {
 }
 
 async function getChannelInfoFromAPI(video_id) {
-  url = `https://yt.lemnoslife.com/noKey/videos?part=snippet&id=${video_id}`
+  let url = `https://yt.lemnoslife.com/noKey/videos?part=snippet&id=${video_id}`
   const response = await fetch(url);
   const respJson = await response.json();
   return new Promise(function (resolve, reject) {
@@ -79,7 +81,7 @@ async function getChannelInfoFromAPI(video_id) {
 
 async function bookmarkCurrentUrl(videoId, currentUrl, bookmarks) {
   storeBookmark(videoId, currentUrl, bookmarks);
-  ele = document.getElementById(bookmarkBtnId)
+  const ele = document.getElementById(bookmarkBtnId)
   ele.innerText = inactiveBtnText
   ele.disabled = true;
 }
@@ -100,7 +102,7 @@ async function storeBookmark(video_id, new_bookmark, bookmarks) {
 
 async function subscribeChannel(channelInfo, channels) {
   storeChannel(channelInfo, channels)
-  ele = document.getElementById(subscribeBtnId)
+  const ele = document.getElementById(subscribeBtnId)
   ele.innerText = inactiveSubscribeBtnText
   ele.disabled = true;
 }
