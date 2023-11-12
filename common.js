@@ -47,3 +47,9 @@ function dedupChannelsArray(channelsArray) {
   }
   return tempArray;
 }
+
+function removeElementFromArray(index, array) {
+  array[index] = array[array.length -1];
+  array.pop();
+  return array
+}

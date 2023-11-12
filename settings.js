@@ -18,6 +18,16 @@ async function getData() {
       let listEle = document.createElement('li')
       listEle.innerHTML = bookmarkObj[i]['title']
 
+      let delButton = document.createElement('button')
+      delButton.innerHTML = 'Remove Bookmark'
+      delButton.setAttribute('class', 'delete-btn')
+      delButton.onclick = async function () {
+        const obj = removeElementFromArray(i, bookmarkObj)
+        await setItem(bookmarksStr, JSON.stringify(obj))
+        location.reload()
+      }
+      listEle.append(delButton)
+
       link.append(listEle)
       bookEle.append(link)
     }
@@ -34,6 +44,16 @@ async function getData() {
 
       let listEle = document.createElement('li')
       listEle.innerHTML = channelObj[i]['channelTitle']
+
+      let delButton = document.createElement('button')
+      delButton.innerHTML = 'Remove Channel'
+      delButton.setAttribute('class', 'delete-btn')
+      delButton.onclick = async function () {
+        const obj = removeElementFromArray(i, channelObj)
+        await setItem(channelsStr, JSON.stringify(obj))
+        location.reload()
+      }
+      listEle.append(delButton)
 
       link.append(listEle)
       channelEle.append(link)

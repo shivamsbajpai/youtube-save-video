@@ -1,8 +1,7 @@
 # youtube-save-video
-Download extension file from here: [extension](./latest-extension-file/yt_skin-1.0.5.xpi)
+Download extension file from here: [extension](./latest-extension-file/yt_skin-1.0.6.xpi)
 
 ## Improvements required
 * unsubscribe and unsave button functionality in youtube page for their respective buttons
-* remove button in bookmarks/channel page for all the links
 * improve ui of bookmarks/channel page
 * remove multiple api calls to get data
