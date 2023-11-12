@@ -150,19 +150,8 @@ function loadButton(btnId, loadBtnText) {
   }
 }
 
-async function startApplication() {
-  const currentUrl = window.location.href;
-  loadButton(bookmarkBtnId, loadBtnText);
-  loadButton(subscribeBtnId, loadBtnText);
-  const videoId = getYouTubeVideoId(currentUrl)
-  if(!videoId) {
-    loadButton(bookmarkBtnId, unavailableText)
-    loadButton(subscribeBtnId, unavailableText)
-    return
-  }
-  const subscribeBtn = document.getElementById(subscribeBtnId)
+async function bookmarkButton(videoId, currentUrl) {
   const bookmarkBtn = document.getElementById(bookmarkBtnId)
-  
   try {
     const [exists, bookmarks] = await bookmarkExists(currentUrl)
     if (exists) {
@@ -179,7 +168,10 @@ async function startApplication() {
     bookmarkBtn.disabled = true;
   }
 
+}
 
+async function subscribeButton(videoId) {
+  const subscribeBtn = document.getElementById(subscribeBtnId)
   try {
     const channelInfo = await getChannelInfoFromAPI(videoId)
     const [check, channels] = await channelExists(channelInfo)
@@ -196,6 +188,21 @@ async function startApplication() {
     subscribeBtn.innerText = unavailableText
     subscribeBtn.disabled = true;
   }
+}
+
+async function startApplication() {
+  const currentUrl = window.location.href;
+  loadButton(bookmarkBtnId, loadBtnText);
+  loadButton(subscribeBtnId, loadBtnText);
+  const videoId = getYouTubeVideoId(currentUrl)
+  if(!videoId) {
+    loadButton(bookmarkBtnId, unavailableText)
+    loadButton(subscribeBtnId, unavailableText)
+    return
+  }
+  
+  bookmarkButton(videoId, currentUrl)
+  subscribeButton(videoId)
 
 }
 

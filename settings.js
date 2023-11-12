@@ -72,9 +72,13 @@ async function exportData() {
       ele.href = fileLink
       ele.download = 'export.json'
       ele.click()
+      alert('exported successfully')
+    } else {
+      alert('data not available to export')
     }
   } catch (err) {
     console.log(err)
+    alert('error while exporting data')
   }
   return null
 }
