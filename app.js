@@ -12,6 +12,20 @@ const loadBtnText = 'Loading'
 const unavailableText = 'Unavailable'
 const inactiveSubscribeBtnText = 'Subscribed'
 
+// Bookmark
+// {
+//   "videoId": "id",
+//   "url": "url",
+//   "title": "title"
+// }
+
+// Channel
+// {
+//   "channelId": "id",
+//   "channelTitle": "title",
+//   "channelURL": "url"
+// }
+
 
 function getYouTubeVideoId(url) {
   var regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;

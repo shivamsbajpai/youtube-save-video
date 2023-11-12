@@ -23,3 +23,27 @@ async function getExistingChannelsObj() {
   let bookmarkStr = await getItem('channels');
   return bookmarkStr ? JSON.parse(bookmarkStr) : [];
 }
+
+function dedupBookmarksArray(bookmarksArray) {
+  let fixMap = {};
+  for(let i = 0;i<bookmarksArray.length; i++) {
+    fixMap[bookmarksArray[i]["videoId"]] = bookmarksArray[i];
+  }
+  let tempArray = [];
+  for(let key in fixMap) {
+    tempArray.push(fixMap[key]);
+  }
+  return tempArray;
+}
+
+function dedupChannelsArray(channelsArray) {
+  let fixMap = {};
+  for(let i = 0;i<channelsArray.length; i++) {
+    fixMap[channelsArray[i]["channelId"]] = channelsArray[i];
+  }
+  let tempArray = [];
+  for(let key in fixMap) {
+    tempArray.push(fixMap[key]);
+  }
+  return tempArray;
+}

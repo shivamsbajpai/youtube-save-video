@@ -108,10 +108,15 @@ async function importData(data) {
       channelsArray = channelsArray.concat(imChannelsArray)
     }
 
+    bookmarksArray = dedupBookmarksArray(bookmarksArray);
+    channelsArray = dedupChannelsArray(channelsArray);
+
     await browser.storage.local.clear()
     await setItem(bookmarksStr, JSON.stringify(bookmarksArray))
     await setItem(channelsStr, JSON.stringify(channelsArray))
   } else {
+    imBookmarksArray = dedupBookmarksArray(imBookmarksArray);
+    imChannelsArray = dedupChannelsArray(imChannelsArray);
     await setItem(bookmarksStr, JSON.stringify(imBookmarksArray))
     await setItem(channelsStr, JSON.stringify(imChannelsArray))
   }
