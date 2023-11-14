@@ -1,5 +1,5 @@
 # YouTube Skin
-Firefox extension to add skin to YouTube page.</br>
+Firefox extension to add skin to YouTube page</br>
 Download extension file from here: [extension](./latest-extension-file/yt_skin-1.0.10.xpi)</br>
 Source code can be found in `source` directory
 
@@ -19,8 +19,17 @@ Buttons are shown up in navbar</br>
 ## Credits
 Channel and video data is fetched from https://yt.lemnoslife.com APIs.
 
+## Issues
+* Sometimes buttons are not visible on the video page</br>
+Reason: div element not available when extension script runs</br>
+Quick fix: reload the video page</br>
+
 ## Improvements required
 * unsubscribe and unsave button functionality in youtube page for their respective buttons
 * improve ui of settings page
 * remove multiple api calls to get data
 * optimizations in remove button on settings page
+
+## Development
+* PRs for issues and improvements are welcome
+* Please raise the pr for master branch
