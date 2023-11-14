@@ -106,10 +106,10 @@ function loadFile() {
 async function importData(data) {
   const obj = JSON.parse(data)
   const imBookmarksStr = obj[bookmarksStr]
-  const imBookmarksArray = JSON.parse(imBookmarksStr)
+  let imBookmarksArray = JSON.parse(imBookmarksStr)
 
   const imChannelsStr = obj[channelsStr]
-  const imChannelsArray = JSON.parse(imChannelsStr)
+  let imChannelsArray = JSON.parse(imChannelsStr)
 
   const existingData = await browser.storage.local.get();
   const extenDataVal = existingData["ext"]
