@@ -25,10 +25,11 @@ Reason: div element not available when extension script runs</br>
 Quick fix: reload the video page</br>
 
 ## Improvements required
-* unsubscribe and unsave button functionality in youtube page for their respective buttons
-* improve ui of settings page
-* remove multiple api calls to get data
-* optimizations in remove button on settings page
+* Add tags for the saved videos to apply filter
+* Unsubscribe and unsave button functionality in youtube page for their respective buttons
+* Improve ui of settings page
+* Remove multiple api calls to get data
+* Optimizations in remove button on settings page
 
 ## Development
 * PRs for issues and improvements are welcome
