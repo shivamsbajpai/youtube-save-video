@@ -1,6 +1,6 @@
 # YouTube Skin
 Firefox extension to add skin to YouTube page</br>
-Download extension file from here: [extension](./latest-extension-file/yt_skin-1.0.10.xpi)</br>
+Download extension file from here: [extension](./latest-extension-file/yt_skin-1.0.11.xpi)</br>
 Source code can be found in `source` directory
 
 ## Features
@@ -19,10 +19,15 @@ Buttons are shown up in navbar</br>
 ## Credits
 Channel and video data is fetched from https://yt.lemnoslife.com APIs.
 
-## Issues
-* Sometimes buttons are not visible on the video page</br>
-Reason: div element not available when extension script runs</br>
-Quick fix: reload the video page</br>
+<details>
+    <summary><h2>Issues</h2></summary>
+    <details>
+        <summary>Sometimes buttons are not visible on the video page<b>[Fixed]</b></summary></br>
+        <s>Reason: div element not available when extension script runs</s></br>
+        <s>Quick fix: reload the video page</s></br>
+        If this issue exists because of update in youtube and element id does not exist anymore then please raise a pr by modifying <code>ytElementId</code> constant in <code>app.js</code> with its new element id or let me know by raising an issue.
+    </details>
+</details>
 
 ## Improvements required
 * Add tags for the saved videos to apply filter

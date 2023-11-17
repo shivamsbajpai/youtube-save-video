@@ -1,6 +1,9 @@
+const extensionDataStorageKey = 'ext'
+const channelsStr = 'channels'
+
 async function getItem(key) {
   let stats = await browser.storage.local.get();
-  let data = stats["ext"]
+  let data = stats[extensionDataStorageKey]
   if(data) {
     return data[key]
   }
@@ -11,17 +14,17 @@ async function setItem(key, val) {
   let data = await browser.storage.local.get();
   if(Object.keys(data).length === 0) {
     data = {
-      "ext": {}
+      [extensionDataStorageKey]: {}
     }
   }
-  data["ext"][key] = val
+  data[extensionDataStorageKey][key] = val
   browser.storage.local.set(data, function () {
   });
 }
 
 async function getExistingChannelsObj() {
-  let bookmarkStr = await getItem('channels');
-  return bookmarkStr ? JSON.parse(bookmarkStr) : [];
+  let channels = await getItem(channelsStr);
+  return channels ? JSON.parse(channels) : [];
 }
 
 function dedupBookmarksArray(bookmarksArray) {

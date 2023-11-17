@@ -3,7 +3,6 @@
 const bookmarksStr = 'bookmarks'
 const bookmarkListId = "bookmark-list"
 
-const channelsStr = 'channels'
 const channelsListId = "channel-list"
 
 async function getData() {
@@ -65,7 +64,7 @@ async function getData() {
 async function exportData() {
   try {
     let stats = await browser.storage.local.get();
-    let data = stats["ext"]
+    let data = stats[extensionDataStorageKey]
     if (data) {
       const fileLink = createFile(JSON.stringify(data))
       const ele = document.createElement('a')
@@ -112,7 +111,7 @@ async function importData(data) {
   let imChannelsArray = JSON.parse(imChannelsStr)
 
   const existingData = await browser.storage.local.get();
-  const extenDataVal = existingData["ext"]
+  const extenDataVal = existingData[extensionDataStorageKey]
   if (extenDataVal) {
     let oldBookmarksStr = extenDataVal[bookmarksStr]
     let bookmarksArray = []
