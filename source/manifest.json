@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "YouTube Skin",
-    "version": "1.0.11",
+    "version": "1.0.12",
     "description": "YouTube save videos and channels",
     "icons": {
         "512": "icons/icon-512.png"
