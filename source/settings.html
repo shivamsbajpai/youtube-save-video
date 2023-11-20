@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,19 +8,21 @@
   <link rel="stylesheet" href="styles/settings.css">
   <link rel="icon" type="image/x-icon" href="/icons/favicon.ico">
 </head>
+
 <body>
   <h1 id="title-heading">Settings</h1>
-  <button id="export-btn">Export</button>
-  <input type="file" id="file-input">
-  <label id="file-input-label" for="file-input">Import</label>
-  <div id="display-ele">
-    <h2>Videos</h2>
-    <ul id="bookmark-list">
-    </ul>
-    <h2>Channels</h2>
-    <ul id="channel-list">
+  <div class="exp-imp-container">
+    <button id="export-btn">Export</button>
+    <input type="file" id="file-input">
+    <label id="file-input-label" for="file-input">Import</label>
+  </div>
 
-    </ul>
+  <div id="bookmark-list">
+    <p class="title">Videos</p>
+  </div>
+  
+  <div id="channel-list">
+    <p class="title">Channels</p>
   </div>
   <script src="common.js"></script>
   <script src="settings.js"></script>

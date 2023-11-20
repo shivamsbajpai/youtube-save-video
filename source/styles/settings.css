@@ -1,3 +1,7 @@
+.exp-imp-container {
+  display: block;
+}
+
 #title-heading {
   text-align: center;
 }
@@ -40,19 +44,49 @@
   border-radius: 40px;
 }
 
+#bookmark-list, #channel-list {
+  display: inline-block;
+  width: 600px;
+  padding: 10px;
+  margin-right: 50px;
+  vertical-align: top;
+}
+
+.title {
+  text-align: center;
+  font-family: monospace;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.video-container {
+  margin-bottom: 20px;
+  padding: 10px;
+  border-style: solid;
+  border-width: 1px;
+  border-color: black;
+  border-radius: 20px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+}
+
+.video-title {
+  text-decoration:none;
+}
+
 .delete-btn {
+  margin-left: auto;
   background-color: #FF0000;
   border: none;
   color: white;
-  padding: 8px;
-  padding-left: 20px;
-  padding-right: 20px;
+  padding-left: 10px;
+  padding-right: 10px;
   text-align: center;
   text-decoration: none;
-  display: inline-block;
   font-size: 14px;
   font-weight: bold;
-  margin: 4px 4px;
   cursor: pointer;
-  border-radius: 40px;
+  border-radius: 20px;
+  height: 30px;
 }

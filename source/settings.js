@@ -11,24 +11,26 @@ async function getData() {
     const bookmarkObj = JSON.parse(bookmarkItem)
     const bookEle = document.getElementById(bookmarkListId)
     for (let i = 0; i < bookmarkObj?.length; i++) {
+      let div = document.createElement('div');
+      div.setAttribute('class', 'video-container');
+
       let link = document.createElement('a')
       link.href = bookmarkObj[i]['url']
-
-      let listEle = document.createElement('li')
-      listEle.innerHTML = bookmarkObj[i]['title']
+      link.innerText = bookmarkObj[i]['title']
+      link.setAttribute('class', 'video-title')
 
       let delButton = document.createElement('button')
-      delButton.innerHTML = 'Remove Bookmark'
+      delButton.innerHTML = 'Delete'
       delButton.setAttribute('class', 'delete-btn')
       delButton.onclick = async function () {
         const obj = removeElementFromArray(i, bookmarkObj)
         await setItem(bookmarksStr, JSON.stringify(obj))
         location.reload()
       }
-      listEle.append(delButton)
+      div.append(link)
+      div.append(delButton)
 
-      link.append(listEle)
-      bookEle.append(link)
+      bookEle.append(div)
     }
   }
 
@@ -37,25 +39,26 @@ async function getData() {
     const channelObj = JSON.parse(channelsItem)
     const channelEle = document.getElementById(channelsListId)
     for (let i = 0; i < channelObj?.length; i++) {
+      let div = document.createElement('div');
+      div.setAttribute('class', 'video-container');
 
       let link = document.createElement('a')
       link.href = channelObj[i]['channelURL']
+      link.innerText = channelObj[i]['channelTitle']
 
-      let listEle = document.createElement('li')
-      listEle.innerHTML = channelObj[i]['channelTitle']
+      link.setAttribute('class', 'video-title')
 
       let delButton = document.createElement('button')
-      delButton.innerHTML = 'Remove Channel'
+      delButton.innerHTML = 'Delete'
       delButton.setAttribute('class', 'delete-btn')
       delButton.onclick = async function () {
         const obj = removeElementFromArray(i, channelObj)
         await setItem(channelsStr, JSON.stringify(obj))
         location.reload()
       }
-      listEle.append(delButton)
-
-      link.append(listEle)
-      channelEle.append(link)
+      div.append(link)
+      div.append(delButton)
+      channelEle.append(div)
     }
   }
 

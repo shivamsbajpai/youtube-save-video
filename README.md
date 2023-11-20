@@ -1,6 +1,6 @@
 # YouTube Skin
 Firefox extension to add skin to YouTube page</br>
-Download extension file from here: [extension](./latest-extension-file/yt_skin-1.0.12.xpi)</br>
+Download extension file from here: [extension](./latest-extension-file/yt_skin-1.0.13.xpi)</br>
 Source code can be found in `source` directory
 
 ## Features
