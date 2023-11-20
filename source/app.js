@@ -210,20 +210,27 @@ async function subscribeButton(videoId) {
 
 async function startApplication() {
   const currentUrl = window.location.href;
+  // let reloadKey = `reload-${currentUrl}`
   let ytElement = null
   try {
     ytElement  = getYTElement()
     if(ytElement === null) {
-      throw 'youtube element not available'
+      throw 'youtube element not available';
     }
+    // if(window.localStorage.getItem(reloadKey)) {
+    //   // window.localStorage.removeItem(reloadKey);
+    // }
   } catch(e) {
-    let key = `reload-${currentUrl}`
-    if(!window.localStorage.getItem(key)) {
-      window.localStorage.setItem(key, 'true');
-      window.location.reload();
-    } else {
-      window.localStorage.removeItem(key);
-    }
+    // console.log(e);
+    // let valStr = window.localStorage.getItem(reloadKey);
+    // let val = parseInt(valStr) || 0;
+    // if(val < 5) {
+    //   window.localStorage.setItem(reloadKey, val++);
+    //   window.location.reload();
+    // } else {
+    //   window.localStorage.removeItem(reloadKey);
+    // }
+    window.location.reload();
     return
   }
   loadButton(bookmarkBtnId, loadBtnText, ytElement);
