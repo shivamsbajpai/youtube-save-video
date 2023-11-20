@@ -7,14 +7,15 @@ Source code can be found in `source` directory
 1. Save videos and channels through video page without logging in</br>
 Buttons are shown up in navbar</br>
 * Save button saves the url of video with title
-* Subscribe button saves the channel url of that video with channel name
+* Subscribe button saves the channel url of that video with channel name</br>
 ![Alt text](readme-assets/buttons.png)
 
 2. Export/Import the saved videos and channels in json format through settings page
 * Can be accessed by clicking on extension button in browser
 
 3. Remove saved videos and channels through settings page of extension
-* Can be accessed by clicking on extension button in browser
+* Can be accessed by clicking on extension button in browser</br>
+![Alt text](readme-assets/data.png)
 
 ## Credits
 Channel and video data is fetched from https://yt.lemnoslife.com APIs.
