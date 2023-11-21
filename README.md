@@ -1,6 +1,6 @@
 # YouTube Skin
 Firefox extension to add skin to YouTube page</br>
-Download extension file from here: [extension](./latest-extension-file/yt_skin-1.0.13.xpi)</br>
+Add extension from here:  [Official Firefox Extension](https://addons.mozilla.org/en-US/firefox/addon/youtube-skin/)</br>
 Source code can be found in `source` directory
 
 ## Features
@@ -39,4 +39,4 @@ Channel and video data is fetched from https://yt.lemnoslife.com APIs.
 
 ## Development
 * PRs for issues and improvements are welcome
-* Please raise the pr for master branch
+* Please raise the pr for `release-amo` branch
