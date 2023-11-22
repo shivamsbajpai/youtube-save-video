@@ -7,7 +7,7 @@ function onError(error) {
 }
 
 function firefoxBrowserAction() {
-  browser.browserAction.onClicked.addListener(() => {
+  browser.action.onClicked.addListener(() => {
     let creating = browser.tabs.create({
       url: "./settings.html",
     });
@@ -16,13 +16,23 @@ function firefoxBrowserAction() {
 }
 
 function chromeBrowserAction() {
-  chrome.browserAction.onClicked.addListener(
+  chrome.action.onClicked.addListener(
     () => {
       chrome.tabs.create({
         url: "./settings.html",
       });
     }
   );
+}
+
+function getBrowser() {
+  let agent = navigator.userAgent
+  if (agent.toLowerCase().includes('firefox')) {
+    return 'firefox';
+  } else if (agent.toLowerCase().includes('chrome')) {
+    return 'chrome';
+  }
+  return 'not supported';
 }
 
 
