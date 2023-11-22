@@ -66,8 +66,15 @@ async function getData() {
 
 async function exportData() {
   try {
-    let stats = await browser.storage.local.get();
-    let data = stats[extensionDataStorageKey]
+    let data = {}
+    let channels = await getItem(channelsStr);
+    if(channels) {
+      data[channelsStr] = JSON.parse(channels);
+    }
+    let bookmarks = await getItem(bookmarksStr);
+    if(bookmarks) {
+      data[bookmarksStr] = JSON.parse(bookmarks);
+    }
     if (data) {
       const fileLink = createFile(JSON.stringify(data))
       const ele = document.createElement('a')
@@ -107,41 +114,30 @@ function loadFile() {
 
 async function importData(data) {
   const obj = JSON.parse(data)
-  const imBookmarksStr = obj[bookmarksStr]
-  let imBookmarksArray = JSON.parse(imBookmarksStr)
+  let imBookmarksArray = obj[bookmarksStr]
 
-  const imChannelsStr = obj[channelsStr]
-  let imChannelsArray = JSON.parse(imChannelsStr)
-
-  const existingData = await browser.storage.local.get();
-  const extenDataVal = existingData[extensionDataStorageKey]
-  if (extenDataVal) {
-    let oldBookmarksStr = extenDataVal[bookmarksStr]
-    let bookmarksArray = []
-    if (oldBookmarksStr) {
-      bookmarksArray = JSON.parse(oldBookmarksStr)
-      bookmarksArray = bookmarksArray.concat(imBookmarksArray)
-    }
-
-    let oldChannelsStr = extenDataVal[channelsStr]
-    let channelsArray = []
-    if (oldChannelsStr) {
-      channelsArray = JSON.parse(oldChannelsStr)
-      channelsArray = channelsArray.concat(imChannelsArray)
-    }
-
-    bookmarksArray = dedupBookmarksArray(bookmarksArray);
-    channelsArray = dedupChannelsArray(channelsArray);
-
-    await browser.storage.local.clear()
-    await setItem(bookmarksStr, JSON.stringify(bookmarksArray))
-    await setItem(channelsStr, JSON.stringify(channelsArray))
-  } else {
-    imBookmarksArray = dedupBookmarksArray(imBookmarksArray);
-    imChannelsArray = dedupChannelsArray(imChannelsArray);
-    await setItem(bookmarksStr, JSON.stringify(imBookmarksArray))
-    await setItem(channelsStr, JSON.stringify(imChannelsArray))
+  let imChannelsArray = obj[channelsStr]
+  let oldBookmarksStr = await getItem(bookmarksStr);
+  let bookmarksArray = []
+  if (oldBookmarksStr) {
+    bookmarksArray = JSON.parse(oldBookmarksStr);
   }
+  bookmarksArray = bookmarksArray.concat(imBookmarksArray);
+
+  let oldChannelsStr = await getItem(channelsStr);
+  let channelsArray = []
+  if (oldChannelsStr) {
+    channelsArray = JSON.parse(oldChannelsStr)
+  }
+  channelsArray = channelsArray.concat(imChannelsArray)
+
+  bookmarksArray = dedupBookmarksArray(bookmarksArray);
+  channelsArray = dedupChannelsArray(channelsArray);
+
+  await clearBrowserStorage();
+
+  await setItem(bookmarksStr, JSON.stringify(bookmarksArray))
+  await setItem(channelsStr, JSON.stringify(channelsArray))
   location.reload()
 }
 
