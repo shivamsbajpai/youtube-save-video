@@ -2,12 +2,10 @@ const channelsStr = 'channels'
 
 async function getItem(key) {
   let browser = getBrowser();
-  console.log(browser);
   switch (browser) {
     case "firefox":
       return getItemFromFirefox(key);
     case "chrome":
-      console.log(key);
       return getItemFromChrome(key);
   }
 }
@@ -37,7 +35,6 @@ async function getItemFromChrome(key) {
 
 async function setItem(key, val) {
   let browser = getBrowser();
-  console.log(browser);
   switch (browser) {
     case "firefox":
       return setItemInFirefox(key, val);
