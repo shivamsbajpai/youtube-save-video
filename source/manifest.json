@@ -6,8 +6,7 @@
     "icons": {
         "512": "icons/icon-512.png"
     },
-    "permissions": ["storage", "activeTab", "contextMenus"],
-    "host_permissions": ["https://yt.lemnoslife.com/*"],
+    "permissions": ["storage"],
     "content_scripts": [
         {
             "matches": ["*://*.youtube.com/*"],
@@ -25,7 +24,7 @@
     "browser_specific_settings": {
         "gecko": {
           "id": "{23913f75-1846-41de-a6b8-190adb375780}",
-          "strict_min_version": "56.0"
+          "strict_min_version": "109.0"
         }
     }
 }
