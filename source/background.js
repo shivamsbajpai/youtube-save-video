@@ -6,9 +6,34 @@ function onError(error) {
   console.log(`Error: ${error}`);
 }
 
-browser.browserAction.onClicked.addListener(() => {
-  let creating = browser.tabs.create({
-    url: "./settings.html",
+function firefoxBrowserAction() {
+  browser.browserAction.onClicked.addListener(() => {
+    let creating = browser.tabs.create({
+      url: "./settings.html",
+    });
+    creating.then(onCreated, onError);
   });
-  creating.then(onCreated, onError);
-});
+}
+
+function chromeBrowserAction() {
+  chrome.browserAction.onClicked.addListener(
+    () => {
+      chrome.tabs.create({
+        url: "./settings.html",
+      });
+    }
+  );
+}
+
+
+function addBrowserAction() {
+  let browser = getBrowser();
+  switch (browser) {
+    case "firefox":
+      return firefoxBrowserAction();
+    case "chrome":
+      return chromeBrowserAction();
+  }
+}
+
+addBrowserAction();
