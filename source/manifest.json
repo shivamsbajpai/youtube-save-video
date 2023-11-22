@@ -17,15 +17,9 @@
         }
     ],
     "background": {
-        "scripts": ["background.js"]
+        "service_worker": "background.js"
     },
     "action": {
         "default_icon": "icons/icon-512.png"
-    },
-    "browser_specific_settings": {
-        "gecko": {
-          "id": "{23913f75-1846-41de-a6b8-190adb375780}",
-          "strict_min_version": "56.0"
-        }
     }
 }
