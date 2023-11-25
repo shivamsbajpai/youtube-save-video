@@ -1,6 +1,14 @@
 # YouTube Skin
-Firefox extension to add skin to YouTube page</br>
-Add extension from here:  [Official Firefox Extension](https://addons.mozilla.org/en-US/firefox/addon/youtube-skin/)</br>
+Web extension to add skin to YouTube page</br>
+
+Extension solves the issue of YouTube recommendation turned off on the homepage due to turned off watch history. </br>
+Since recommendations work fine if account is not logged in. </br>
+This extension gives the functionality to save the video and channel without the need of logging to the google account. </br>
+
+Add extension from official channels:</br>
+[Firefox Extension](https://addons.mozilla.org/en-US/firefox/addon/youtube-skin/)</br>
+[Chrome Extension](https://chromewebstore.google.com/detail/jjmbohilcpfmobmmicpihpkibfpkpcme)</br>
+
 Source code can be found in `source` directory
 
 ## Features
