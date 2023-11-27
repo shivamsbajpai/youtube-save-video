@@ -1,8 +1,13 @@
 # YouTube Skin
 Web extension to add skin to YouTube page</br>
 
-Extension solves the issue of YouTube recommendation turned off on the homepage due to turned off watch history. </br>
-Since recommendations work fine if account is not logged in. </br>
+## Issue
+YouTube recommendation on home page gets turned off when watch history is turned off. For reference, please check the below image.</br>
+
+
+![Alt Text](readme-assets/issue.png)
+## Solution
+However, recommendations work fine if account is not logged in. </br>
 This extension gives the functionality to save the video and channel without the need of logging to the google account. </br>
 
 Add extension from official channels:</br>
